@@ -1,0 +1,730 @@
+\documentclass{article}
+
+ \usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fancyhdr}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\title{Practical Guide \\ For \\ Implementing Thread Protocol}
+\author{Anshul Kothari, anshulkothari96@gmail.com}
+\date{June 30, 2017}
+ 
+ \pagestyle{fancy}
+\fancyhf{}
+\lfoot{Anshul Kothari, anshulkothari96@gmail.com}
+\rfoot{Page \thepage}
+
+\renewcommand{\footrulewidth}{1pt}
+\renewcommand{\headrulewidth}{0pt}
+
+\begin{document}
+     \pagenumbering{gobble}
+    \maketitle
+     \newpage
+    \tableofcontents
+    \newpage
+    \pagenumbering{arabic}
+    \section{Introduction}
+    
+        \subsection{What is Internet of Things?}
+        The Term Internet of Things is composed
+        of two words Internet and Things, where Things means our daily routine items such as refrigerator, ceiling fans, Light Bulbs, Television, meter etc, given computing power i.e. the ability to make decisions and Internet refers to connectivity of this objects. Thus Internet of Things means connection of this smart objects.
+        
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=0.5\linewidth]{iot.png}
+          \caption{Connection of Smart Devices}
+          
+        \end{figure}
+       
+        
+        \subsection{Applications of Internet of Things}
+        There are myriads of application of Internet of Things, few of them are as follows:
+             \subsubsection{Detection of Forest Fire}
+            For example if we place large number of temperature sensors having computing power and wireless radio, at different locations in the forest, then if there is increase in the temperature in particular region, sensor at that location will send warning signal over the air, and thus massive destruction can be prevented.
+            \subsubsection{ Flood Detection} we can deploy wireless sensor network which detects weather conditions, rainfall, water level etc and sends the warning signal, so that preventive steps can be taken.
+            \subsubsection{ Smart Home} Connecting everything in your home and letting them talk to each other will bring happiness. For example what if your refrigerator can place order for the items that need to be purchased.
+         
+        \subsection{Comparison of Different Protocol}
+        There are many protocols out there in the market such as Bluetooth, ZigBee, and Thread etc. The comparison of the protocols on the basis of the layer in which they operate is shown in the figure.
+       
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=\linewidth]{iot2.png}
+          \caption{Comparison of Different Protocols}
+          
+        \end{figure}
+        
+        
+        \subsection{Why Thread Protocol?}
+        \begin{figure}[H]
+        \centering
+          \includegraphics[width=\linewidth]{iot5.png}
+        \end{figure}
+        
+        It turns out that ZigBee and Thread protocol are similar in their architecture, both use IEEE 802.15.4 at Physical Layer/MAC Layer and 6LoWPAN at the networking Layer. But there is subtly differences between the two.
+        Mechanisms which are NOT defined in 6LoWPAN standard:\\
+        1)	Key exchange mechanism\\
+        2)	 Mesh Routing\\
+        3)	 Neighbour Discovery\\
+        4)	 Border Router Behaviour \\
+        Now though Thread and ZigBee both are implementing 6LoWPAN standard, both the protocols implement the aforementioned mechanisms differently. For example Thread uses MLE neighbour discovery protocol, while ZigBee uses RPL. 
+        
+        
+        \subsection{What is Thread Protocol?}
+            \begin{enumerate}
+                \item Thread is the networking layer protocol for mesh network, specifically designed for Internet of Things.\\
+                \item It is based on IEEE 802.15.4\\
+                \item Efficient\\
+                \item Reliable and Secure\\
+                \item Clean and Less Complex Stack
+            \end{enumerate}
+        \subsection{Type of Devices in the Thread Network}
+        There are basically two types of devices in Thread network:
+            \subsubsection {Always Powered on Devices}
+            Such as refrigerator, meter etc. They can be used as routers.
+            
+            \begin{figure}[H]
+              \centering
+              \begin{subfigure}[b]{0.3\linewidth}
+                \includegraphics[width=\linewidth]{iot3.png}
+                \caption{Power Meter}
+              \end{subfigure}
+              \begin{subfigure}[b]{0.2\linewidth}
+                \includegraphics[width=\linewidth]{iot4.png}
+                \caption{Refrigerator}
+              \end{subfigure}
+            
+            \end{figure}
+            
+            \subsubsection{Occasionally Powered on Devices }
+            Such as light bulb, ceiling fan etc. Also known as Sleepy Devices
+            Routers are further classified as Leader Router, Border Router based on their functionality.
+            
+            \begin{figure}[H]
+              \centering
+              \begin{subfigure}[H]{0.2\linewidth}
+                \includegraphics[width=\linewidth]{iot7.png}
+                \caption{Toaster}
+              \end{subfigure}%
+              \begin{subfigure}[H]{0.2\linewidth}
+                \includegraphics[width=\linewidth]{iot8.png}
+                \caption{Light Bulb}
+              \end{subfigure}%
+             \begin{subfigure}[H]{0.2\linewidth}
+                \includegraphics[width=\linewidth]{iot9.png}
+                \caption{Ceiling Fan}
+              \end{subfigure}
+            
+            \end{figure}
+        
+        \subsection{Basic Thread Network Structure}%
+        
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=0.6\linewidth]{iot6.png}
+          \caption{Structure of Thread Network}
+          \end{figure}%
+            \subsubsection{End Device} This device does not participate in the routing of packets through the Thread network. They communicate with other nodes in the Thread network through their parent router.
+            \subsubsection{Active Router} This devices are responsible for routing packets in the Thread Network.
+            \subsubsection{Router Eligible Devices (REED)} This devices are similar to end devices but can become routers when network needs them.
+            \subsubsection{Leader} Leader Router is responsible for the following:\\
+            \begin{enumerate}
+            \item Assigning Address to the Routers\\
+            \item Decision Making in the Thread Network\\
+            \item Transferring Network Data\\
+            \end{enumerate}
+            \subsubsection{Border Router} Border Router is responsible for the following:\\
+            \begin{enumerate}
+            \item Connecting Thread network with Internet\\
+            \item External Commissioning\\
+            \item Assigning Global Unicast Address\\
+            \end{enumerate}
+        
+        \subsection{Types of Address Assigned to the node in Thread network}
+            \subsubsection{ Link Local Address}
+            This address is used to communicate with directly connected node or node at single hop distance.
+            \subsubsection{ Mesh Local Address}
+            This is address is used to communicate with any other node in the Thread network.
+            \subsubsection {Local Multicast Address}
+            This address is used to send multicast messages to the node directly connected sender node
+            \subsubsection{Mesh Local Multicast Address}
+            This address is used to send multicast messages to all the nodes in the Thread network.
+            \subsubsection{ Global Unicast Address}
+            This is used to communicate with remote node (Node connected to the Internet)
+    \newpage
+    \section{Play With NXP FRDM KW41Z Boards }
+        \subsection{Environment Setup}
+            Operating System Used: Windows 10\\
+            Steps to be followed:\\
+            \begin{enumerate}
+            \item Download and Install MCUXpresso IDE from
+            \url{http://www.nxp.com/products/software-and-tools/hardware-development-tools/freedom-development-boards/nxp-freedom-development-kit-for-kinetis-kw41z-31z-21z-mcus:FRDM-KW41Z?tab=In-Depth\_Tab}
+            \item Drag and Drop SDK folder in the MCUXpress IDE Installed SDK window as shown in the figure.
+            \item  Download and Install Terminal Application such as Putty (for Windows) from
+            \url{https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html}
+            \end{enumerate}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot10.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot11.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot12.png}
+            \end{figure}
+        
+        \subsection{Creating Two Board Network}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.6\linewidth]{iot13.png}
+            \end{figure}
+            Steps to be followed:
+            \begin{enumerate}
+            \item  Open MCUXpresso IDE
+            \item In the Quick Start panel click on import SDK examples
+            \item Select the Target as KW41Z, click next
+            \item Select wireless\_examples$->$thread$->$end\_device$->$freetos, also uncheck the enable semi hosting check box
+            \item Click next
+            \item  Uncheck the redirect printf check box
+            \item Right Click on the project and click build project
+            \item  Select your project in project explorer view and click debug in the quick start panel
+            \item  If you get an error then try to right click on the project and click clean project and build and debug project again.
+            \item Repeat the procedure for flashing Router Eligible Device Application on another board.
+            \item Open putty session for both of your board
+            \item Create the thread network from REED terminal
+            \textcolor{Maroon}{ thr create}
+            \item Join the End device to the Thread network
+            \textcolor{Maroon}{thr join}
+            \item Use \textcolor{Maroon}{ifconfig} on both the terminal to get the IP address of the nodes
+            \item Try to ping devices in the network
+            Kudos! You have Established communication between two boards
+            
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot14.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot15.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot16.png}
+            \end{figure}
+            
+            Example Explained
+            \begin{itemize}
+            \item The execution of the Application starts from main() in the file framework/OSAbstraction/Source/fsl\_os\_abstraction\_free\_rtos.c
+            (Note: we are using FREE RTOS for real time scheduling)
+             Main() $->$ startup\_task() $->$ main\_task()
+             Main\_task() is in nwk\_ip/app/common/app\_init.c
+            \item Main\_task() calls the respective functions to initialize different tasks such as LED, MAY, PHY , Key Board etc.
+            \item Main\_task() then calls APP\_Init(), which initializes our application (that is create task and initialize its parameters)
+            \item Main\_task() then jumps into infinite loop and calls APP\_Handler(), which handles any event occurred and calls the respective handler.
+            \item In source/router\_eligible\_device\_app.c there are different types of
+            \item Event handlers such as Key Board handler, commissioning event handler, joining event handler etc (You can modify event handler according to your need, for example if you push button then what should happen?)
+            \item Use pton() to convert the IP address string to ipAddr\_t type o pton(AF\_INET6, "fdc3:8ac1:b6ac:dffe:985d:fb14:f4ef:28ac",\&gCoapDestAddress)
+            \item Use shell\_write("your\_string”) to print string on the shell, It is very useful to debug your application
+            \end{itemize}
+            \end{enumerate}
+            
+        \subsection{Using Shell (Command Line Interface)}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot17.png}
+            \end{figure}
+            Here is the brief description of the often used shell commands.\\
+            \textcolor{Maroon}{help}: To get help for the commands available in the shell and their parameters\\
+            \textcolor{Maroon}{ifconfig}: To get the IP address assigned to the node\\
+            \textcolor{Maroon}{coap}: Used to send COAP messages between nodes in the thread network.\\
+             \textcolor{Maroon}{factoryreset}: To reset the device\\
+             \textcolor{Maroon}{identify}: Used to identify the device in the mesh network (The device on which you run the command will start blinking led)
+        
+        \subsection{Creating three or more Board Thread Network}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.6\linewidth]{iot18.png}
+            \end{figure}
+            Steps to be followed:
+            \begin{enumerate}
+            \item Connect board to the PC
+            \item Flash one by one the example application on three boards as mentioned in section 1.5 (End\_Device Application on one board and REED Application on other two devices)
+            \item Check for the USB port assigned to your boards
+            (In the device$->$ Device Manager $->$ Port) such as COM3 or COM8 etc
+            \item Open the Putty Application
+            \item Configure the Parameters and open three different sessions using all the three boards simultaneously
+            \item Keep the arrangement of the boards as shown in the figure (So that we can test for Range and routing capability of Thread Network)
+            \item Now Create thread network using shell of one of the REED\\
+            \textcolor{Maroon}{thr create}
+            \item Join other REED into thread network using shell\\
+            \textcolor{Maroon}{thr join}
+            \item Join the End Device to the Thread network using its shell\\
+            \textcolor{Maroon}{thr join}
+            \item Try to ping one device from another using ping command, use \textcolor{Maroon}{ifconfig} command to get the ip address of the node
+            \item Try to remove Router (not leader router) from the network and see the effect! (End device will quickly gets connected to leader router)
+            \item Try to remove Leader from the network and see the effect (Network will self heal, Router will become Leader)
+            \end{enumerate}
+            Kudos! You have tested and analyzed thread protocol on mesh network
+            
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot19.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot20.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot21.png}
+            \end{figure}
+        
+        \subsection{Implementing Border Router using Linux PC}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot22.png}
+            \end{figure}
+            Steps need to be followed:
+            \begin{enumerate}
+            \item Flash the host\_controlled\_device application into one of the NXP board (You need to configure macro, goto
+            source$->$config.h\\
+            \#define THR\_SERIAL\_TUN\_ROUTER 1
+            \item Copy the folder in windows PC
+            /SDK\_2.2\_FRDM-KW41Z/tools/wireless/host\_sdk to your linux PC’s Desktop
+            \item Open new Terminal and chage directory to host\_sdk folder\\
+            \textcolor{Maroon}{cd Desktop/host\_sdk/hsdk}
+            \item Install dependencies\\
+            \textcolor{Maroon}{sudo apt-get install build-essential\\
+            sudo apt-get install libudev-dev\\
+            sudo apt-get install libpcap-dev\\}
+            \item Generate shared libraries, files will be generated in the host\_sdk/hsdk/build directory\\
+            \textcolor{Maroon}{make}
+            \item Move the files to /usr/local/lib\\
+            \textcolor{Maroon}{sudo make install PREFIX=/usr/local/lib}
+            \item Change directory to demo\\
+            \textcolor{Maroon}{cd demo}
+            \item Compile the demo applications\\
+            \textcolor{Maroon}{make\\
+            make spi}
+            \item Check the files in bin folder\\
+            \textcolor{Maroon}{ls bin/}
+            \item Test the GetKinetisDevices Application, Plug your device to linux PC\\
+            \textcolor{Maroon}{cd bin\\
+            ./GetKinetisDevices}
+            \item Creating a virtual interface using tun/tap, open the new terminal and run the following command in the command prompt\\
+            \textcolor{Maroon}{sudo ip tuntap Add mode tun fslthr0\\
+            sudo ip -6 addr add fd01::2 dev fslthr0\\
+            sudo ip -6 route add fd01::1 dev fslthr0\\
+            sudo ip -6 route add fd01:0000:0000:3ead::/64 dev fslthr0\\
+            sudo ip link set fslthr0 up\\
+            sudo sysctl –w net.ipv6.conf.all.forwarding=1\\
+            sudo ip -6 route show}
+            \item Open putty session on the end device and use \textcolor{Maroon}{ifconfig} to get the IP address of the node
+            \item Try pinging the end device from Linux PC using the following commands\\
+            \textcolor{Maroon}{cd hskd/demo/bin
+            ./Thread\_KW\_Tun /dev/ttyACM0 fslthr0}
+            \item Open another terminal in linux PC
+            \textcolor{Maroon}{ping6 –c 1 fd01::3ead:7c16:37b5:e6ef:701a} (Change with your Unicast Global Address)\\
+            Kudos! You have implemented your Border Router, now you can connect your node to internet, YeaH
+            \end{enumerate}
+            
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot23.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot24.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot25.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot26.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot27.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot28.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot29.png}
+            \end{figure}
+            
+            \subsection{ Building Application to Test Border Router Functionality}
+            Steps to be followed:
+            \begin{enumerate}
+            \item Every time you want to run an application using Border router, you need to start your FSCI encoder/decoder
+            \textcolor{Maroon}{cd hsdk/demo/bin
+            ./Thread\_KW\_Tun /dev/ttyACM0 fslthr0}
+            \item Open new terminal in the Linux shell
+            \textcolor{Maroon}{cd host-sdk/hsdk-pyhton/src/com/nxp/woreless\_connectivity/test
+             sudo python rgb\_led.py fd01::3ead:7ccc:0000:8855:0005}(Change the address according to your board’s Global unicast address)
+             Kudos! You will now see led flashing on the end device.\\
+            \item Exercise\
+             Test with temp.py file in the same folder and try to send the data to the server using Ethernet interface (Hint: Collect the data you received on the Tun interface and then send the data to the server script such as PHP, which will store the data to the database).
+            \end{enumerate}
+        \subsection{Replacing NXP Thread Stack with Open Thread Stack}
+            Note, you have to build your own applications such as LED On/Off using CoAP as Application Layer protocol when using openthread stack, because it is just Networking layer which can be used by IP enable Application layer such as CoAP to send data over 802.15.4 .
+            Operating System Used: Ubuntu 16.04 LTS
+            Steps to be followed:\\
+            \begin{enumerate}
+            \item  Download and Install GNU toolchain, if not already installed from
+            \url{https://launchpad.net/gcc-arm-embedded}
+            \item Download and install NXP Test Tool from\url{ http://www.nxp.com/webapp/sps/download/license.jsp?colCode=TESTTOOL_SETUP}
+            \item  Change the directory to Desktop/openthread-master
+            \item Complie the demo application using\\
+            textcolor{Maroon}{ ./bootstrap
+            make –f examples/Makefile-kw41z}
+            \item If the complilation is successful, you will get the .elf files in openthread-master/output/kw41z/bin
+            \item Convert the .elf file to pure binary file using
+            \textcolor{Maroon}{ cd output/kw41z/bin
+            arm-none-eabi-objcopy –O binary ot-cli-ftd ot-cli-ftd.bin}
+            \item  Flash the binary file to the board using NXP Test Tool,
+            \item  Open the Test Tool
+            \item Click on Firmware Loader$->$ Kinetis Frimware Loader$->$ Browse
+            \item  Browse the binary file (Note you need to transfer the files from Ubuntu PC to Linux PC, because Test Tool works only in Windows)
+            \item Select Upload
+            \item  Open the Putty terminal session using the port assigned to your board and with proper configuration
+            \item  Press Enter, and enter help, you will see list of commands available to you.
+            \item Flash the same binary file to other NXP board
+            \item Use ifconfig to get the IP address of the nodes
+            \item Try to ping one node form other.
+            Kudos! You have finished Open Thread Implementation on NXP Board.
+            \end{enumerate}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot30.png}
+            \end{figure}
+        
+    \newpage
+    \section{Play with Silicon Lab EFR32MG KIT}
+        \subsection{Environment Setup}
+            Important Note: Use Public WiFi or LAN connection, when using Simplicity Studio. It will not work, when you are connected to ESIEE network, which uses proxy server.\\
+            Steps to be followed:\\
+            \begin{enumerate}
+            \item Plug your boards to PC via USB cable
+            \item Download and install the Simplicity studio from\url{ http://www.silabs.com/support/getting-started/mesh-networking/thread-getting-started/get-started-with-thread-and-mighty-gecko}
+            \item Sign up, if you are new user
+            \item You will be prompted for installation of the device drivers, click OK
+            \item Register your Kit, if not already registered
+            \item Download Thread SDK as follows
+            \item Click on the package manager (green downward arrow) and check the Thread SDK (2.3.0.0) and uncheck other packages
+            \item Wait for the complete installation
+            \item Your devices will be shown in the Device panel
+            \item Double Click on the device
+            \item Click on the Install, next to Adapter Firmware version (if update is available)
+            \item Install IAR workbench to compile your source files using
+            \item Click on Resource$->$Technical Support$->$ Scroll Down to Email Support Request $->$ Select Software Releases
+            \item  Select EFR32MG Software and click on Go
+            \item Click on IAR Embedded Workbench for ARM, v7.80.2
+            \item  Click on ftp://files\_.exe link
+            \item Click on Open in the Top left corner, to download IAR workbench
+            \item Install the IAR workbench using default setting, generate temporary key if needed
+            \end{enumerate}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot31.png}
+            \end{figure}
+        \subsection{Server Client Application}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.5\linewidth]{iot32.png}
+            \end{figure}
+            Steps need to be followed:\\
+            \begin{enumerate}
+            \item Double click on one of the Device in the Device Panel
+            \item Then select Client under the Getting Started -> Silicon Lab Thread examples
+            \item Click OK to Create Example Project
+            \item Click Generate to generate the Application source files (Change the generation directory if needed)
+            \item Right click on your project in the project explorer view and click build project (Note that you have IAR workbench working)
+            \item  Right click on the device in the device panel and select Upload Application
+            \item  Choose the files as shown in the figure, note the path of the files
+            \item Click OK
+            \item Right click on the device in the device panel and select launch console, tab on serial 1 and press enter
+            \item Join the client in the network using command\\
+            \textcolor{Maroon}{ join}\\
+            Kudos! you have your client application up and running\\
+            Follow the similar procedure for the server (Note you need to install server application on one of the board and client on other two )\\
+            \item Launch the console for server and choose serial 1 tab
+            \item  Add the client by using the following command\\
+            \textcolor{Maroon}{ expect “join-key”} (join-key, which you will get when you type join in the client shell)
+            \item  Analyze the packets in the air using Network Analyzer
+            \item  Right click on the device on which you want to analyze the traffic, in the device panel and select start capture, you can visualize the sent and received packets over the air
+            \item In the Launcher Click on the Compatible Tools -> Energy Profiler
+            \item Choose the device in the current device dialog, for which you want to measure the power consumption, YeaH Now you can measure power consumption, average voltage, average current of each device in the thread network.
+             Kudos! Now you are free to explore the Silicon Lab Boards and create awesome applications.
+            \end{enumerate}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot33.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot34.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot35.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot36.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot37.png}
+            \end{figure}
+        
+    \newpage
+    \section{Play with Zolertia Re-Mote}
+        \subsection{Environment Setup}
+            Operating System Used: Ubuntu 16.04 LTS\\
+            Steps to be followed:\\
+            \begin{enumerate}
+            \item Get your RE-Mote Board ( Hardware platform from Zolertia) and the USB cable
+            \item  Plug the board to the PC using USB cable
+            \item  Open the terminal (Clt + Alt + T)
+            \item  Install the toolchain (Compiler and debugger), if not installed\\
+            \textcolor{Maroon}{ sudo apt-get update\\
+            sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi}
+            \item Change directory, where you want to install Contiki operating system
+            \textcolor{Maroon}{ cd Desktop
+             git clone https://github.com/contiki-os/contiki}
+            \item  Update the repository with dependencies\\
+            \textcolor{Maroon}{cd contikiOS
+             git submodule update –init --recursive}
+            \end{enumerate}
+        
+        \subsection{ Contiki Operating System}
+            It is open source OS , specifically designed for Internet of Things. Directory structure for Contiki Operaring System is as follows:\\
+            Apps : It contains application files such as email, MQTT, CoAP etc.\\
+            Core: It contains OS files which are platform independent.\\
+            Examples: It contains many examples to test the functionality of sensors attached.\\
+            Platform: It contains platform specific files such as pin configuration etc\\
+            Tools: It contains files for tools such as Simulator etc.\\
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot38.png}
+            \end{figure}
+        \subsection{ Building Hello World Application}
+            Steps to be followed:\\
+            \begin{enumerate}
+            \item Change directory\\
+            \textcolor{Maroon}{cd ContikiOS/examples/hello-world}
+            \item  Definition of Make file: Make files are used to compile many source files together and efficiently
+            \item  Save the Target platform in the Makefile.target\\
+            \textcolor{Maroon}{make TARGET=zoul}
+            \item  Open new terminal change directory\\
+            \textcolor{Maroon}{ cd /dev}
+            \item Search for the ttyUSB0 or any other ttyUSB file assigned to your board and change its permission (you have to do every time you log in to your system)\\
+            \textcolor{Maroon}{ sudo chmod 777 ttyUSB0}
+            \item Compile and flash the binary file to the board\\
+            \textcolor{Maroon}{ make hello-world.upload}
+            (It should create 4 files with extensions .bin, .elf, .csc, .map)
+            \item  Open Putty terminal with the following configurations as shown in the image
+             Yeah! You will see hello world printed to the console (Note that you will get only single hello world written on the console, if you have used default hello-world.c file)
+            \end{enumerate}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot39.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot40.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot41.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot42.png}
+            \end{figure}
+        \subsection{Hello World Application Explanation}
+            Open the file hello-world.c in the current directory with gedit or nano text editor. Below is the line wise description of the file.
+            \begin{itemize}
+            \item Include the core operating system files
+            \item  Includes the standard library of C
+            \item  Give the name to your process, one that will be used internally and one that you want to be printed on the console
+            \item  It instructs the OS to start the process as soon as the OS boots.
+            \item Syntax for defining your process, ev is event and data is event data
+            \item Your actually function logic should be between process\_begin() and process\_end()
+            \end{itemize}
+        \subsection{Building Led On/Off Application}
+            For every sensor or actuator you have driver in the ContikiOS, which provides abstraction. So you can just use API without concerning about the underlying hardware configuration.\\
+            Steps to be followed:\\
+            \begin{enumerate}
+            \item  Create test-led.c file and its make file similar to the make file for hello-world
+            \item \#include ‘’/dev/led.h’’, (LED Driver) which contains led specific functions declarations
+            \item  Check for the available functions in led.h and use them accordingly.
+            \item  Create the test-led.c similar to hello-world.c file and modify the function logic between Process\_Begin() and Process\_End()
+            \item  Complie and Run the file similar to hello-world example.
+            \item Exercise: Try to create application for displaying current temperature using temperature sensor Driver API. (Hint you can find the API in ContikiOS/platform/zoul/dev)
+            \end{enumerate}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot43.png}
+            \end{figure}
+        \subsection{Implementing Open Thread Stack}
+            Steps to be followed:\\
+            \begin{enumerate}
+            \item If not installed, install toolchain\\
+            \textcolor{Maroon}{ sudo apt-get update\\
+            sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi}
+            \item Install the dependencies\\
+            \textcolor{Maroon}{ sudo apt-get install python-pip\\
+             pip install intelhex\\
+            pip install python-magic}
+            \item  Clone the openthread repository (change the directory, where you want to clone the repository to)\\
+            \textcolor{Maroon}{ cd Desktop\\
+             git clone –recursive https://github.com/openthread/openthread}
+            \item Compile the Source files\\
+            \textcolor{Maroon}{ ./bootstrap\\
+             make –f examples/Makefile-cc2538 clean \&\& make –f examples/Makefile-cc2538}\\
+            (4 files will be created in the directory
+            openthread-master/output/cc2538/bin)
+            \item Convert the files to pure binary\\
+            \textcolor{Maroon}{ arm-none-eabi-objcopy –O binary output/cc2538/bin/ot-cli-ftd output/cc2538/bin/ot-cli-ftd.bin}
+            \item Flash the binary files to the board using cc2538-bsl (Flash program) , open new linux terminal\\
+            \textcolor{Maroon}{ cd ContikiOS/tools/cc2538-bsl\\
+            sudo python cc2538-bsl.py –e –w –v –p /dev/ttyUSB0 –a 0x00200000 home/Desktop/openthread-master/output/cc2538/bin/filename.bin} (Complete file path)
+            Note: You may need to change the device file according to the port your board is assigned.
+            (To check the port run the following command in the linux shell
+            dmseg | grep ttyUSB)
+            \item  Open Putty terminal session with the configurations mentioned in earlier exercise.
+             Kudos! You have your open thread command line interface running on your board.
+            \end{enumerate}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot44.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot45.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot46.png}
+            \end{figure}
+            \begin{figure}[H]
+            \centering
+              \includegraphics[width=\linewidth]{iot47.png}
+            \end{figure}
+            \newpage
+    \section{ Creating Heterogeneous Network with NXP FRDM-KW41Z and Zolertia Boards}
+        Steps to be followed:\\
+        \begin{enumerate}
+        \item  Configure one of your NXP board as mentioned in the section 1.5 and Zolertia board as mentioned in the section 5.1
+        \item Connect both the boards via USB to your PC (Windows or Linux)
+        \item On each one open Putty terminal session on the connected USB port (Check for the port in devices-> devices manager->Ports) such as COM3 or COM8 etc
+        \item Create thread network using NXP board’s shell\\
+        \textcolor{Maroon}{thr create}
+        \item Get the channel in NXP board\\
+        \textcolor{Maroon}{thr get channel}
+        \item Set the channel in the Zolertia board\\
+        \textcolor{Maroon}{ channel xyz}
+        \item Get the PANID of the thread network in NXP board\\
+        \textcolor{Maroon}{thr get panid\\
+        0x abc}
+        \item Set the panid for the Zolertia board\\
+        \textcolor{Maroon}{panid 0xabc}
+        \item Join the zolertia board in the network\\
+        \textcolor{Maroon}{ ifconfig up\\
+        thread start}
+        \item On each one Try to ping other device in the network (use ifconfig command to get the IP address of the device)
+        Kudos! You have established the communication between different types of board.
+        \end{enumerate}
+        \begin{figure}[H]
+        \centering
+          \includegraphics[width=\linewidth]{iot48.png}
+        \end{figure}
+    \newpage
+    \section{ Work Need To Done}
+        \begin{itemize}
+        \item  Establish a GIANT mesh network with all the three types of boards i.e. FRDM KW41Z, EFR32MG, Zolertia Re-Mote (using NXP thread stack on NXP board, silicon Lab thread stack on silicon Lab board and open thread stack on Zolertia board)
+        \item Testing with External Commissioning (i.e. using Border router as relay agent between joiner router and external commissioner)
+        \end{itemize}
+        \newpage
+        \section{References}
+        I am listing some of the references from where you can get the help when you are stuck somewhere or need detailed explaination of the concepts.
+        \begin{enumerate}
+        \item If you want to get the detailed overview of Thread Protocol then click \newline
+        \url{https://threadgroup.org/About}
+        \item Link to getting started guide for NXP Board
+        \newline
+        \url{http://www.nxp.com/products/software-and-tools/hardware-development-tools/freedom-development-boards/nxp-freedom-development-kit-for-kinetis-kw41z-31z-21z-mcus:FRDM-KW41Z}
+        \item Link to Schematics of FRDM KW41Z 
+        \newline
+        \url{ http://www.nxp.com/downloads/en/schematics/FRDM-KW41Z-SCH.pdf}
+        \item Link to open thread repository and directions for configurations 
+        \newline
+        \url{ https://github.com/openthread/openthread}
+        \item  Link for configuring openthread on NXP board
+        \newline
+        \url{https://github.com/openthread/openthread/tree/master/examples/platforms/kw41z}
+        \item  Link for configuring openthread on Zolertia board
+        \newline
+        \url{https://github.com/openthread/openthread/tree/master/examples/platforms/cc2538}
+        \item Link to getting started guide to Zolertia board
+        \newline
+        \url{https://github.com/Zolertia/Resources/wiki/Getting-Started-with-Zolertia-products}
+        \item Link to the book for understanding the Internet of Things concepts and get the practical experience with zolertia board
+        \newline
+        \url{http://wireless.ictp.it/school_2016/book/IoT_in_five_days-v1.0.pdf}
+        \item Link to quick start guide from Silicon Labs
+        \newline
+        \url{https://www.silabs.com/documents/public/quick-start-guides/qsg113-efr32-thread.pdf}
+        
+        \end{enumerate}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
