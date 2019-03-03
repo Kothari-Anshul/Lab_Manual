@@ -1,2 +1,2 @@
-# Lab_Maual
+# Lab_Manual
 Getting started guide with Thread Protocol 
